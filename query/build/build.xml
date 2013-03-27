@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<project name="project" default="standalone">
+    <description>
+            description
+    </description>
+
+	<property name="dist_dir" value="${basedir}/dist"/>
+	<property name="src" value="${basedir}/../src"/>
+	<property name="web" value="${basedir}/../web"/>
+	<property name="srclib" value="${basedir}/../lib"/>
+	<property name="classes" value="${dist_dir}/classes"/>
+	
+	<property name="standalone" value="${dist_dir}/standalone"/>
+	<property name="warfile" value="${dist_dir}/query.war"/>
+	<property name="jarfile" value="query.jar"/>
+	
+	<fileset id="libset" dir="${srclib}" includes="**/*.jar"></fileset>
+	<path id="classpath">
+		<fileset refid="libset" />
+	</path>
+	
+    <target name="war" depends="compile">
+    	<delete file="${warfile}"/>
+        <mkdir dir="${dist_dir}/war"/>
+    	<copy todir="${dist_dir}/war">
+    		<fileset dir="${web}"/>
+    	</copy>
+    	<copy todir="${dist_dir}/war/WEB-INF/classes">
+    		<fileset dir="${classes}"/>
+    	</copy>
+    	<copy todir="${dist_dir}/war/WEB-INF/lib">
+    		<fileset dir="${srclib}" includes="*.jar"/>
+    	</copy>
+    	<war destfile="${warfile}" basedir="${dist_dir}/war"/>
+    </target>
+	
+	<target name="standalone" depends="jar">
+		<mkdir dir="${standalone}"/>
+		<copy todir="${standalone}" file="${dist_dir}/${jarfile}"/>
+		
+		<touch file="${standalone}/start.bat"/>
+		<echo file="${standalone}/start.bat">java -jar ${jarfile}</echo>
+		
+		<copy todir="${standalone}/lib">
+			<fileset dir="${srclib}" includes="*.jar"/>
+			<fileset dir="${srclib}/jetty" includes="*.jar"/>
+		</copy>
+		<copy todir="${standalone}/web">
+			<fileset dir="${web}"/>
+		</copy>
+	</target>
+	
+	
+	<target name="jar" depends="compile">
+		<delete file="${dist_dir}/${jarfile}"/>
+		<pathconvert property="mf.classpath" pathsep=" ">
+			<mapper>
+				<chainedmapper>
+	                <flattenmapper/>
+	                <globmapper from="*" to="lib/*"/>
+            	</chainedmapper>
+			</mapper>
+			<path refid="classpath" />
+		</pathconvert>
+		<jar destfile="${dist_dir}/${jarfile}" basedir="${classes}">
+			<manifest>
+				<attribute name="Main-class" value="siddur.query.web.JettyStart"/>
+				<attribute name="Class-Path" value="${mf.classpath}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="${dist_dir}"/>
+		<mkdir dir="${classes}"/>
+		
+		<javac srcdir="${src}" destdir="${classes}" includeantruntime="false">
+			<classpath refid="classpath"/>
+		</javac>
+		
+		<copy todir="${classes}">
+			<fileset dir="${src}" excludes="**/*.java"/>
+		</copy>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${dist_dir}"></delete>
+	</target>
+	
+</project>
