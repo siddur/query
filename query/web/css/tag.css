@@ -1,0 +1,11 @@
+.paging span{
+	padding: 3px 10px;
+	background-color: #EDEDED;
+	vertical-align: middle;
+	cursor: pointer;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+
+span.selected{
+	background-color: #DBC59E;
+}

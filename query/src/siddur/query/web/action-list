@@ -1,0 +1,3 @@
+siddur.query.web.actions.UserAction=/user
+siddur.query.web.actions.ProjectAction=/project
+siddur.query.web.actions.QueryAction=/query
