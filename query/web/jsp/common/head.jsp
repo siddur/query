@@ -75,12 +75,6 @@
 	<%
 		}
 	%>
-	<%
-		if(isCustomer){
-	%>
-		<a href="/query/query/questions">questions</a>
-	<%
-		}
-	%>
+	
 	
 </div>

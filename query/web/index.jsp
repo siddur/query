@@ -16,13 +16,23 @@
 </head>
 <body>
 	<%@include file="/jsp/common/head.jsp" %>
-	<div class="content">
-		<form method="post" action="/query/query/search">
-			<input name="key" class="search_input txt">
-			<input class="search_button btn" type="submit" value="search">
-			<input type="hidden" name="pageIndex" value="0">
-			<input type="hidden" name="pageSize" value="5">
-		</form>
-	</div>
+	<%
+		if(isCustomer){
+	%>
+		<jsp:forward page="/query/query/questions"></jsp:forward>
+	<%
+		}else{
+	%>
+		<div class="content">
+			<form method="post" action="/query/query/search">
+				<input name="key" class="search_input txt">
+				<input class="search_button btn" type="submit" value="search">
+				<input type="hidden" name="pageIndex" value="0">
+				<input type="hidden" name="pageSize" value="5">
+			</form>
+		</div>
+	<% 
+		}
+	%>
 </body>
 </html>
