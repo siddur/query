@@ -6,7 +6,8 @@
    metadata-complete="false"
    version="3.0"> 
 
-  <display-name>Toolcloud Platform</display-name>
+  <display-name>query</display-name>
+  
   
   <servlet>
   	<servlet-name>ControlServlet</servlet-name>
@@ -16,7 +17,7 @@
   
   <servlet-mapping>
   	<servlet-name>ControlServlet</servlet-name>
-  	<url-pattern>query/*</url-pattern>
+  	<url-pattern>/query/*</url-pattern>
   </servlet-mapping>
   
   <welcome-file-list>
