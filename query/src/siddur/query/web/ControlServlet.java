@@ -1,7 +1,6 @@
 package siddur.query.web;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -35,12 +34,13 @@ public class ControlServlet extends HttpServlet{
 	
 	@Override
 	public void destroy() {
-		try {
-			DerbyUtil.instance.destroy();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			try {
+				DerbyUtil.instance.destroy();
+				LuceneUtil.instance.destory();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 	}
 
 	@Override

@@ -113,7 +113,7 @@ public class DerbyUtil {
 		List<Comment> list = new ArrayList<Comment>();
 		try {
 			Statement st = conn.createStatement();
-			String sql = "select * from COMMENT c where c.target=-1";
+			String sql = "select * from COMMENT c where c.target<1";
 			ResultSet rs =st.executeQuery(sql);
 			while(rs.next()){
 				Comment c = new Comment();

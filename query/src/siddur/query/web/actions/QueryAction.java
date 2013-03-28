@@ -115,7 +115,11 @@ public class QueryAction extends Action{
 	public Result closeQuestion(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		String id = req.getParameter("id");
 		int commentId = Integer.parseInt(id);
-		dbUtil.closeComment(commentId);
+		boolean success = dbUtil.closeComment(commentId);
+		if(success){
+			Comment c = dbUtil.getCommentById(commentId);
+			lcUtil.updateComment(c);
+		}
 		return myQuestions(req, resp);
 	}
 	

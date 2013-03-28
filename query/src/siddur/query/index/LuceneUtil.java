@@ -41,30 +41,55 @@ public class LuceneUtil {
 	public static final String WRITE_AT = "writeAt";
 	public static final String WRITE_BY = "writeBy";
 	public static final String PROJECT = "project";
+	public static final String TARGET = "target";
 	public static LuceneUtil instance = new LuceneUtil();
 	
 	private Analyzer analyzer;
-	private FieldType ft1, ft2, ft3, ft4, ft5;
+	private FieldType ft1, ft2, ft3, ft4, ft5, ft6;
+	IndexWriter iw;
 	
 	private LuceneUtil(){}
 	
 	public void addComment(Comment c){
 		try {
-			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_42, analyzer);
-			config.setOpenMode(OpenMode.CREATE_OR_APPEND);
-			IndexWriter iw = new IndexWriter(FSDirectory.open(DATA_DIR), config);
 			iw.addDocument(createDoc(c));
-			iw.close();
+			iw.commit();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public void updateComment(Comment c){
+		try {
+			iw.updateDocument(new Term(ID, Integer.toString(c.id)), createDoc(c));
+			iw.commit();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void destory() throws IOException{
+		iw.close();
+	}
+	
 	public void init(){
+		boolean first = false;
+		if(!DATA_DIR.isDirectory()){
+			first = true;
+		}
 		analyzer = new EnglishAnalyzer(Version.LUCENE_42);
+		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_42, analyzer);
+		config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+		try {
+			iw = new IndexWriter(FSDirectory.open(DATA_DIR), config);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		ft1 = new FieldType();
-		ft1.setIndexed(false);
+		ft1.setIndexed(true);
 		ft1.setStored(true);
 		
 		ft2 = new FieldType();
@@ -84,7 +109,12 @@ public class LuceneUtil {
 		ft5.setIndexed(true);
 		ft5.setStored(true);
 		
-		indexAll();
+		ft6 = new FieldType();
+		ft6.setIndexed(false);
+		ft6.setStored(true);
+		
+		if(first)
+			indexAll();
 	}
 	
 	public Document createDoc(Comment c){
@@ -99,55 +129,10 @@ public class LuceneUtil {
 		doc.add(f4);
 		Field f5 = new Field(PROJECT, Integer.toString(c.project), ft5);
 		doc.add(f5);
+		Field f6 = new Field(TARGET, Integer.toString(c.target), ft6);
+		doc.add(f6);
 		
 		return doc;
-	}
-	
-	public Paging<Comment> search2(int project, String condition, int pageIndex, int pageSize){
-		if(condition == null) condition = "";
-		Paging<Comment> paging = new Paging<Comment>();
-		paging.pageSize = pageSize;
-		paging.pageIndex = pageIndex;
-		List<Comment> list = new ArrayList<Comment>();
-		try {
-			Query q = new QueryParser(Version.LUCENE_42, CONTENT, analyzer).parse(condition);
-			IndexReader reader = DirectoryReader.open(FSDirectory.open(DATA_DIR));
-			IndexSearcher is = new IndexSearcher(reader);
-			
-			int total = (pageIndex + 1) * pageSize;
-			TopDocs results = is.search(q, 150);
-			ScoreDoc[] hits = results.scoreDocs;
-			
-			int numTotalHits = results.totalHits;
-			Log.info(numTotalHits + " total matching documents");
-			
-			int start = pageIndex * pageSize;
-		    int end = Math.min(numTotalHits, total);
-		    paging.total = numTotalHits;
-		    
-		    for (int i = start; i < end; i++) {
-				ScoreDoc s = hits[i];
-				Document doc = is.doc(s.doc);
-				Comment c = new Comment();
-				c.id = Integer.parseInt(doc.getField(ID).stringValue());
-				c.content = doc.getField(CONTENT).stringValue();
-				System.out.println(c.content + "-------" + s.score);
-				System.out.println(is.explain(q, s.doc));
-				c.writeAt = new Date(Long.parseLong(doc.getField(WRITE_AT).stringValue()));
-				c.writeBy = doc.getField(WRITE_BY).stringValue();
-				c.project = Integer.parseInt(doc.getField(PROJECT).stringValue());
-				
-				list.add(c);
-			}
-		    
-		    reader.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		paging.data = list;
-		
-		return paging;
 	}
 	
 	public Paging<Comment> search(int project, String condition, int pageIndex, int pageSize){
@@ -160,6 +145,7 @@ public class LuceneUtil {
 			BooleanQuery bq = new BooleanQuery();
 			bq.add(tq, Occur.MUST);
 			if(condition != null && !condition.equals("")){
+//				condition = condition.replace("?", "");
 				Query q = new QueryParser(Version.LUCENE_42, CONTENT, analyzer).parse(condition);
 				bq.add(q, Occur.MUST);
 			}
@@ -183,12 +169,12 @@ public class LuceneUtil {
 				Comment c = new Comment();
 				c.id = Integer.parseInt(doc.getField(ID).stringValue());
 				c.content = doc.getField(CONTENT).stringValue();
-				System.out.println(c.content + "-------" + s.score);
-				System.out.println(is.explain(tq, s.doc));
+//				System.out.println(c.content + "-------" + s.score);
+//				System.out.println(is.explain(tq, s.doc));
 				c.writeAt = new Date(Long.parseLong(doc.getField(WRITE_AT).stringValue()));
 				c.writeBy = doc.getField(WRITE_BY).stringValue();
 				c.project = Integer.parseInt(doc.getField(PROJECT).stringValue());
-				
+				c.target = Integer.parseInt(doc.getField(TARGET).stringValue());
 				list.add(c);
 			}
 		    
@@ -203,22 +189,17 @@ public class LuceneUtil {
 	}
 	
 	private void indexAll(){
-		if(!DATA_DIR.isDirectory()){
-			List<Comment> comments = DerbyUtil.instance.listAsks();
-			
-			Log.info("start to index..");
-			
-			try {
-				IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_42, analyzer);
-				config.setOpenMode(OpenMode.CREATE);
-				IndexWriter iw = new IndexWriter(FSDirectory.open(DATA_DIR), config);
-				for(Comment c : comments){
-					iw.addDocument(createDoc(c));
-				}
-				iw.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+		List<Comment> comments = DerbyUtil.instance.listAsks();
+		
+		Log.info("start to index..");
+		
+		try {
+			for(Comment c : comments){
+				iw.addDocument(createDoc(c));
 			}
+			iw.commit();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
