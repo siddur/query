@@ -29,7 +29,7 @@
 		for(Comment c : paging.data){
 	%>
 			<div class="list">
-				<div class="content"><a href="/query/query/detail?id=<%= c.id%>"><%= c.content%></a></div>
+				<div class="content">[<%= c.target==0 ? "close" : "open"%>]<a href="/query/query/detail?id=<%= c.id%>"><%= c.content%></a></div>
 				<div class="detail">ask by <font color="#FAA732"><%= c.writeBy%></font> at <font color="#5BB75B"><%= c.writeAt%></font></div>
 			</div>
 	<%

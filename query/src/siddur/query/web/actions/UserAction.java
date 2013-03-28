@@ -99,6 +99,7 @@ public class UserAction extends Action{
 			
 			List<ProjectInfo> projects = dbUtil.getProjects();
 			req.setAttribute("projects", projects);
+			req.setAttribute("crumb", "manage > user");
 			req.getRequestDispatcher("/jsp/user/user-list.jsp").forward(req, resp);
 		}
 		return Result.ok();

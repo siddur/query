@@ -41,7 +41,7 @@
 		if(username != null){
 	%>
 		<form method="get" action="/query/user/logout">
-			<a href="/query/user/me"><%= username %></a>&nbsp;&nbsp;
+			<a href="/jsp/user/user-pwd.jsp"><%= username %></a>&nbsp;&nbsp;
 			<input class="btn log-btn" type="submit" value="logout">
 			&nbsp;
 		</form>
@@ -65,6 +65,7 @@
 		if(username != null && !isCustomer){
 	%>
 	<a href="/jsp/query/ask.jsp">ask</a>
+	<a href="/query/query/questions1">questions</a>
 	<%
 		}
 	%>
@@ -75,6 +76,12 @@
 	<%
 		}
 	%>
-	
+	<%
+		if(username != null && !isCustomer){
+	%>
+		<a href="/query/query/mine">mine</a>
+	<%
+		}
+	%>
 	
 </div>

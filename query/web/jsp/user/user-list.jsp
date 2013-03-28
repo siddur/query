@@ -38,6 +38,11 @@
 	.add_user div{
 		padding-bottom:10px;
 	}
+	.crumb{
+		padding:5px;
+		text-indent:10px;
+		background-color:#FCF8E3;
+	}
 </style>
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script>
@@ -49,6 +54,9 @@
 <body>
 
 <%@include file="/jsp/common/manage.jsp" %>
+	<div class="crumb">
+		<%= request.getAttribute("crumb")%>
+	</div>
 	<div class="body">
 	<%if(list != null){%>
 		<table>

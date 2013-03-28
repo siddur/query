@@ -7,6 +7,6 @@ public class Comment {
 	public String content;
 	public Date writeAt = new Date();
 	public String writeBy;
-	public int target = -1;
+	public int target = -1; //-1 open; 0 close;
 	public int project;
 }

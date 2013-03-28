@@ -94,6 +94,21 @@ public class DerbyUtil {
 		}
 	}
 	
+	public boolean closeComment(int id){
+		boolean result = false;
+		try {
+			Statement st = conn.createStatement();
+			String sql = "update COMMENT c set c.target=0 where c.id=" + id;
+			st.execute(sql);
+			st.close();
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	public List<Comment> listAsks(){
 		List<Comment> list = new ArrayList<Comment>();
 		try {
@@ -147,6 +162,81 @@ public class DerbyUtil {
 			Statement st = conn.createStatement();
 			String sql = "select * from COMMENT c where c.target=" + ask + " order by writeAt desc";
 			ResultSet rs =st.executeQuery(sql);
+			while(rs.next()){
+				Comment c = new Comment();
+				c.id = rs.getInt(1);
+				c.content = rs.getString(2);
+				c.writeAt = rs.getTimestamp(3);
+				c.writeBy = rs.getString(4);
+				c.target = rs.getInt(5);
+				c.project = rs.getInt(6);
+				list.add(c);
+			}
+			st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public List<Comment> listMyAnswers(String username){
+		List<Comment> list = new ArrayList<Comment>();
+		try {
+			Statement st = conn.createStatement();
+			String sql = "select * from COMMENT cc where cc.id in (select c.target from COMMENT c where c.writeBy='" + username + "') order by cc.writeAt desc";
+			ResultSet rs =st.executeQuery(sql);
+			rs.setFetchSize(100);
+			while(rs.next()){
+				Comment c = new Comment();
+				c.id = rs.getInt(1);
+				c.content = rs.getString(2);
+				c.writeAt = rs.getTimestamp(3);
+				c.writeBy = rs.getString(4);
+				c.target = rs.getInt(5);
+				c.project = rs.getInt(6);
+				list.add(c);
+			}
+			st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public List<Comment> listAllOpenQuestions(){
+		List<Comment> list = new ArrayList<Comment>();
+		try {
+			Statement st = conn.createStatement();
+			String sql = "select * from COMMENT c where c.target=-1  order by c.writeAt desc";
+			ResultSet rs =st.executeQuery(sql);
+			rs.setFetchSize(100);
+			while(rs.next()){
+				Comment c = new Comment();
+				c.id = rs.getInt(1);
+				c.content = rs.getString(2);
+				c.writeAt = rs.getTimestamp(3);
+				c.writeBy = rs.getString(4);
+				c.target = rs.getInt(5);
+				c.project = rs.getInt(6);
+				list.add(c);
+			}
+			st.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public List<Comment> listMyQuestions(String username){
+		List<Comment> list = new ArrayList<Comment>();
+		try {
+			Statement st = conn.createStatement();
+			String sql = "select * from COMMENT c where c.target<1 and c.writeBy='" + username + "' order by c.target asc, c.writeAt desc";
+			ResultSet rs =st.executeQuery(sql);
+			rs.setFetchSize(100);
 			while(rs.next()){
 				Comment c = new Comment();
 				c.id = rs.getInt(1);

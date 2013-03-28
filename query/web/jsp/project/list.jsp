@@ -15,11 +15,19 @@
 		background-color: #A9DBA9;
 		padding:5px;
 	}
+	.crumb{
+		padding:5px;
+		text-indent:10px;
+		background-color:#FCF8E3;
+	}
 </style>
 </head>
 <body>
 
 <%@include file="/jsp/common/manage.jsp" %>
+<div class="crumb">
+	<%= request.getAttribute("crumb")%>
+</div>
 <div class="body">
 	<%if(projects != null){%>
 		<%for(ProjectInfo p : projects){ %>

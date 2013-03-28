@@ -22,6 +22,7 @@ public class ProjectAction extends Action{
 	public Result list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		List<ProjectInfo> list = dbUtil.getProjects();
 		req.setAttribute("projects", list);
+		req.setAttribute("crumb", "manage > project");
 		req.getRequestDispatcher("/jsp/project/list.jsp").forward(req, resp);
 		return Result.ok();
 	}

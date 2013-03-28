@@ -11,7 +11,7 @@ public class JettyStart {
 		String webroot = "web";
 		app.setResourceBase(webroot);
 		app.setDescriptor(webroot + "/WEB-INF/web.xml");
-		Server server = new Server(80);
+		Server server = new Server(8080);
 		server.setHandler(app);
 		server.start();
 		server.join();

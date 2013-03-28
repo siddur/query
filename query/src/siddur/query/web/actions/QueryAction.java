@@ -112,6 +112,14 @@ public class QueryAction extends Action{
 		return questions(req, resp);
 	}
 	
+	public Result closeQuestion(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		String id = req.getParameter("id");
+		int commentId = Integer.parseInt(id);
+		dbUtil.closeComment(commentId);
+		return myQuestions(req, resp);
+	}
+	
+	
 	public Result detail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 		String idStr = req.getParameter("id");
 		int id = Integer.parseInt(idStr);
@@ -144,6 +152,15 @@ public class QueryAction extends Action{
 		return Result.ok();
 	}
 	
+	public Result questions1(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		List<Comment> list = dbUtil.listAllOpenQuestions();
+		req.setAttribute("comments", list);
+		req.getRequestDispatcher("/jsp/query/opens.jsp").forward(req, resp);
+		return Result.ok();
+	}
+	
+	
+	
 	
 	private Paging<Comment> doSearch(String key, HttpServletRequest req, HttpServletResponse resp){
 		UserInfo u = (UserInfo)req.getSession().getAttribute("user");
@@ -163,5 +180,33 @@ public class QueryAction extends Action{
 		return lcUtil.search(u.project, key, pageIndex, pageSize);
 	}
 	
+	public Result mine(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		UserInfo u = (UserInfo)req.getSession().getAttribute("user");
+		//vendor
+		if(u.type == 2){
+			return myQuestions(req, resp);
+		}else{
+			return myAnswers(req, resp);
+		}
+	}
 	
+	public Result myQuestions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		UserInfo u = (UserInfo)req.getSession().getAttribute("user");
+		String username = u.username;
+		List<Comment> list = dbUtil.listMyQuestions(username);
+		req.setAttribute("comments", list);
+		req.setAttribute("crumb", "mine > my questions");
+		req.getRequestDispatcher("/jsp/my/questions.jsp").forward(req, resp);
+		return Result.ok();
+	}
+	
+	public Result myAnswers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		UserInfo u = (UserInfo)req.getSession().getAttribute("user");
+		String username = u.username;
+		List<Comment> list = dbUtil.listMyAnswers(username);
+		req.setAttribute("comments", list);
+		req.setAttribute("crumb", "mine > my answers");
+		req.getRequestDispatcher("/jsp/my/questions.jsp").forward(req, resp);
+		return Result.ok();
+	}
 }
