@@ -15,7 +15,7 @@
 	function ready4add(id, target){
 		$(".add").remove();
 		var html = '<div class="add"><form method="post"><textarea id="comment" name="comment" rows="6" cols="60"></textarea></br><input type="submit" onclick="return mySubmit();" class="btn" value="answer"></form></div>';
-		$("#" + id).parent().after(html);
+		$("#" + id).parent().parent().after(html);
 		$("div.add form").attr("action","/query/query/answer1?target=" + target + "&id=" + id);
 	}
 
@@ -37,8 +37,6 @@
 	}
 	.content{
 		font-size:16px;
-		max-height: 40px;
-		overflow: hidden;
 	}
 	.detail{
 		font-size:14px;
@@ -55,7 +53,7 @@
 				for(Comment c : list){
 			%>
 					<div class="list">
-						<div class="content"><a id="<%= c.id%>" href="javascript:ready4add(<%= c.id%>, <%= c.target%>)"><%= c.content%></a></div>
+						<div class="content"><a id="<%= c.id%>" href="javascript:ready4add(<%= c.id%>, <%= c.target%>)"><%= c.content.replace("\n", "<br>")%></a></div>
 						<div class="detail">asked at <font color="#5BB75B"><%= c.writeAt%></font></div>
 					</div>
 			<%

@@ -14,10 +14,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Answer-list</title>
 
+<script src="/js/jquery.js"></script>
 <script>
 	function change(event){
 		var target = document.getElementById("customer");
 		target.disabled = !event.checked;
+
+		if(event.checked){
+			var ask = $("#ask").text();
+			$("#comment").val(ask);
+			$("#answer_btn").val("answer&assign");
+		}else{
+			$("#comment").val("");
+			$("#answer_btn").val("answer");
+		}
 	}
 	function mySubmit(){
 		var txt = document.getElementById("comment").value;
@@ -31,8 +41,6 @@
 <style>
 	.content{
 		font-size:16px;
-		max-height: 40px;
-		overflow: hidden;
 	}
 	.detail{
 		text-indent: 5px;
@@ -57,8 +65,8 @@
 	<div class="body">
 		<div class="title">Question:</div>
 		<div class="content-unit">
-			<div class="content"><%= ask.content %></div>
-			<div class="detail">ask by <font color="#FAA732"><%= ask.writeBy%></font> at <font color="#5BB75B"><%= ask.writeAt%></font></div>
+			<div id="ask" class="content"><%= ask.content.replace("\n", "<br>") %></div>
+			<div class="detail">asked by <font color="#FAA732"><%= ask.writeBy%></font> at <font color="#5BB75B"><%= ask.writeAt%></font></div>
 		</div>
 		<div class="title">Answers:</div>
 		<% 
@@ -66,10 +74,10 @@
 		%>
 				<div class="content-unit">
 					<div class="content">
-						<%= c.content%>
+						<%= c.content.replace("\n", "<br>")%>
 					</div>
 					<div class="detail">
-						ask by <font color="#FAA732"><%= c.writeBy%></font> at <font color="#5BB75B"><%= c.writeAt%></font>
+						answered by <font color="#FAA732"><%= c.writeBy%></font> at <font color="#5BB75B"><%= c.writeAt%></font>
 					</div>
 				</div>
 		<%
@@ -91,7 +99,7 @@
 				</select>
 				<br/>
 				<textarea id="comment" name="comment" rows="6" cols="60"></textarea><br>
-				<input class="btn" type="submit" onclick="return mySubmit();" value="I want to answer"><br>
+				<input id="answer_btn" class="btn" type="submit" onclick="return mySubmit();" value="answer"><br>
 			</form>
 		</div>
 	</div>

@@ -22,8 +22,10 @@ public class PagingTag extends TagSupport{
 			out.println("<div class='paging'>");
 			String style = "unselected";
 			
-			String last = "<span id='last'>last</span>";
-			out.println(last);
+			if(pageNum > 0){
+				String last = "<span id='last'>last</span>";
+				out.println(last);
+			}
 			
 			for (int i = 0; i < pageNum; i++) {
 				
@@ -35,8 +37,10 @@ public class PagingTag extends TagSupport{
 				out.println("<span class='"+style+"' id='"+i+"'>"+(i+1)+"</span>");
 			}
 			
-			String next = "<span id='next'>next</span>";
-			out.println(next);
+			if(pageNum > 0){
+				String next = "<span id='next'>next</span>";
+				out.println(next);
+			}
 			
 			out.println("</div>");
 		} catch (IOException e) {

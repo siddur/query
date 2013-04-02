@@ -10,17 +10,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Projects</title>
-<style>
-	p.item span{
-		background-color: #A9DBA9;
-		padding:5px;
+
+
+<script src="/js/jquery.js"></script>
+<script>
+	function toEdit(id){
+		$(".disappear2").addClass("disappear");
+		$(".disappear1").removeClass("disappear");
+		$("#" + id + " .disappear2").removeClass("disappear");
+		$("#" + id + " .disappear1").addClass("disappear");
 	}
-	.crumb{
-		padding:5px;
-		text-indent:10px;
-		background-color:#FCF8E3;
-	}
-</style>
+</script>
 </head>
 <body>
 
@@ -29,18 +29,49 @@
 	<%= request.getAttribute("crumb")%>
 </div>
 <div class="body">
+	<table>
+		
 	<%if(projects != null){%>
 		<%for(ProjectInfo p : projects){ %>
-			<p class="item"><span><%=p.name%></span></p>
+			<tr id="<%=p.id%>"><form action="/query/project/update">
+				<td width="300">
+					<span class="disappear1 item"><%=p.name%></span>
+					<input value="<%=p.id%>" name="id" type="hidden">
+					<input class="disappear2 disappear" name="project" value="<%=p.name%>" type="text" >	
+				</td>
+				<td>
+					<input class="disappear1 btn" value="edit" type="button" onclick="toEdit(<%=p.id%>);">
+					<input class="disappear2 btn disappear" value="save" type="submit">
+				</td>
+			</form></tr>
 		<%} %>
 	<%}%>
-	
-	<p>
+	</table>
+	<p style="margin-top: 50px;">
 		<form method="post" action="/query/project/add">
-			<input name="project" style="height:19px">
+			<input name="project" type="text">
 			<input class="btn" type="submit" value="add">
 		</form>
 	</p>
+	
 </div>
+<style>
+	span.item{
+		background-color: #A9DBA9;
+		padding:5px 10px;;
+	}
+	
+	.crumb{
+		padding:5px;
+		text-indent:10px;
+		background-color:#FCF8E3;
+	}
+	input[type="text"]{
+		 height:21px;
+	}
+	.disappear{
+		display: none;
+	}
+</style>
 </body>
 </html>

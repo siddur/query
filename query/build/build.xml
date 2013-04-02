@@ -43,6 +43,9 @@
 		<touch file="${standalone}/start.bat"/>
 		<echo file="${standalone}/start.bat">java -jar ${jarfile}</echo>
 		
+		<touch file="${standalone}/start.sh"/>
+		<echo file="${standalone}/start.sh">java -jar ${jarfile}</echo>
+		
 		<copy todir="${standalone}/lib">
 			<fileset dir="${srclib}" includes="*.jar"/>
 			<fileset dir="${srclib}/jetty" includes="*.jar"/>

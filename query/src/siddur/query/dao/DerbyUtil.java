@@ -28,14 +28,14 @@ public class DerbyUtil {
 			conn = DriverManager.getConnection("jdbc:derby:query;create=true");
 			Statement st = conn.createStatement();
 			//table USER_INFO
-			String sql = "create table USER_INFO(username varchar(10) NOT NULL, password varchar(10) NOT NULL, project int, user_type int, primary key (username))";
+			String sql = "create table USER_INFO(username varchar(20) NOT NULL, password varchar(10) NOT NULL, project int, user_type int, primary key (username))";
 			st.execute(sql);
 			sql = "insert into USER_INFO(username, password, project, user_type) values('superAdmin', 'password', 1, 1)";
 			st.execute(sql);
 			
 			//table PROJECT_INFO
 			sql = "create table PROJECT_INFO(id int not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-					"project varchar(10) NOT NULL)";
+					"project varchar(100) NOT NULL)";
 			st.execute(sql);
 			sql = "insert into PROJECT_INFO(project) values('hisoft')";
 			st.execute(sql);
@@ -43,9 +43,9 @@ public class DerbyUtil {
 			//table QUESTION
 			sql = "create table COMMENT(" +
 						"id int not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-						"content varchar(500), " +
+						"content varchar(2000), " +
 						"writeAt TIMESTAMP, " +
-						"writeBy varchar(10), " +
+						"writeBy varchar(20), " +
 						"target int, " +
 						"project int" +
 					")";
@@ -54,7 +54,7 @@ public class DerbyUtil {
 			sql = "create table COMMENT_CUSTOMER(" +
 					"id int not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
 					"target int, " +
-					"customer varchar(10)," +
+					"customer varchar(20)," +
 					"status int default 1" +
 				")";
 			st.execute(sql);
@@ -389,6 +389,21 @@ public class DerbyUtil {
 		try {
 			Statement st = conn.createStatement();
 			String sql = "insert into PROJECT_INFO(project) values('"+project+"')";
+			st.execute(sql);
+			st.close();
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public boolean editProject(ProjectInfo p){
+		boolean result = false;
+		try {
+			Statement st = conn.createStatement();
+			String sql = "update PROJECT_INFO p set p.project='"+p.name+"' where p.id=" + p.id;
 			st.execute(sql);
 			st.close();
 			result = true;

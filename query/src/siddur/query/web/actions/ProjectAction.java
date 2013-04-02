@@ -32,5 +32,15 @@ public class ProjectAction extends Action{
 		dbUtil.addProject(p);
 		return list(req, resp);
 	}
+	
+	public Result update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+		String name = req.getParameter("project");
+		String id = req.getParameter("id");
+		ProjectInfo p = new ProjectInfo();
+		p.id = Integer.parseInt(id);
+		p.name = name;
+		dbUtil.editProject(p);
+		return list(req, resp);
+	}
 
 }
