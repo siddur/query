@@ -26,4 +26,15 @@
    <type>java.lang.Integer</type>
   </attribute>
  </tag>
+ <tag>
+  <name>commentDetail</name>
+  <tag-class>siddur.query.web.tag.CommentDetailTag</tag-class>
+  <body-content>empty</body-content>
+  <attribute>
+   <name>comment</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+   <type>siddur.query.bean.Comment</type>
+  </attribute>
+ </tag>
 </taglib>

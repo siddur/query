@@ -90,3 +90,9 @@ body{
     vertical-align: middle;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+.comment_detail{
+	text-indent: 5px;
+	font-size:14px;
+	font-style: italic;
+}

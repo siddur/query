@@ -2,7 +2,7 @@
 <%@page import="siddur.query.bean.Comment"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="/WEB-INF/paging.tld" prefix="s" %>
+<%@ taglib uri="/WEB-INF/query.tld" prefix="s" %>
 <link rel="stylesheet" type="text/css" href="/css/tag.css" />
 <style>
 	.list{
@@ -30,7 +30,7 @@
 	%>
 			<div class="list">
 				<div class="content">[<%= c.target==0 ? "close" : "open"%>]<a href="/query/query/detail?id=<%= c.id%>"><%= c.content%></a></div>
-				<div class="detail">asked by <font color="#FAA732"><%= c.writeBy%></font> at <font color="#5BB75B"><%= c.writeAt%></font></div>
+				<s:commentDetail comment="<%=c %>"/>
 			</div>
 	<%
 		}

@@ -2,6 +2,7 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="/WEB-INF/query.tld" prefix="s" %>
 <% 
 	List<Comment> list = (List<Comment>)request.getAttribute("comments");
 %>
@@ -38,9 +39,6 @@
 	.content{
 		font-size:16px;
 	}
-	.detail{
-		font-size:14px;
-	}
 </style>
 </head>
 <body>
@@ -54,7 +52,7 @@
 			%>
 					<div class="list">
 						<div class="content"><a id="<%= c.id%>" href="javascript:ready4add(<%= c.id%>, <%= c.target%>)"><%= c.content.replace("\n", "<br>")%></a></div>
-						<div class="detail">asked at <font color="#5BB75B"><%= c.writeAt%></font></div>
+						<s:commentDetail comment="<%=c %>"/>
 					</div>
 			<%
 				}
