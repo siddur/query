@@ -50,7 +50,7 @@
 	%>
 		<form method="post" action="/query/user/login">
 			<input class="small-txt txt" type="text" name="username" placeholder="username">
-			<input class="small-txt txt" type="text" name="password" placeholder="password">
+			<input class="small-txt txt" type="password" name="password" placeholder="password">
 			<input class="btn log-btn" type="submit" value="login">
 			&nbsp;
 		</form>

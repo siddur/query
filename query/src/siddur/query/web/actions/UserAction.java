@@ -30,6 +30,7 @@ public class UserAction extends Action{
 				req.getSession().setAttribute("user", u);
 				Cookie c = new Cookie("username", username);
 				c.setPath("/");
+				c.setMaxAge(60 * 60 * 24 * 7);
 				resp.addCookie(c);
 				req.getRequestDispatcher("/query").forward(req, resp);
 				return Result.ok();

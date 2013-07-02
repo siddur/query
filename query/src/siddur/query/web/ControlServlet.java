@@ -73,14 +73,16 @@ public class ControlServlet extends HttpServlet{
 		UserInfo u = (UserInfo)req.getSession().getAttribute("user");
 		if(u!=null)
 			return true;
-		
-		for (Cookie c : req.getCookies()){
-			if("username".equals(c.getName())){
-				String username = c.getValue();
-				u = DerbyUtil.instance.getUser(username);
-				if(u != null){
-					req.getSession().setAttribute("user", u);
-					return true;
+		Cookie[] cs = req.getCookies();
+		if(cs != null){
+			for (Cookie c : cs){
+				if("username".equals(c.getName())){
+					String username = c.getValue();
+					u = DerbyUtil.instance.getUser(username);
+					if(u != null){
+						req.getSession().setAttribute("user", u);
+						return true;
+					}
 				}
 			}
 		}
